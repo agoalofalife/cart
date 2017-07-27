@@ -13,7 +13,8 @@
         }
     ],
     "require": {
-        "php": ">=7.1"
+        "php": ">=7.1",
+        "league/container": "^3.0"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.6",
