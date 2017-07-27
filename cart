@@ -2,6 +2,7 @@
 <?php
 require $_SERVER["PWD"] . '/vendor/autoload.php';
 use Cart\Commands\MigrateCommand;
+use Cart\Commands\MigrateRollbackCommand;
 
 use Cart\Kernel;
 use Symfony\Component\Console\Application;
@@ -10,5 +11,6 @@ use Symfony\Component\Console\Application;
 (new Kernel())->bootstrapping();
 $application = new Application();
 $application->add(new MigrateCommand());
+$application->add(new MigrateRollbackCommand());
 
 $application->run();

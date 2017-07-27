@@ -28,6 +28,6 @@ class CreateCartItems
      */
     public function down()
     {
-        Capsule::dropIfExists('cart_items');
+        Capsule::schema()->dropIfExists('cart_items');
     }
 }
