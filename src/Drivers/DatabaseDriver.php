@@ -20,21 +20,25 @@ class DatabaseDriver implements CartDriverContract
 
     public function add(array $item)
     {
-        // TODO: Implement add() method.
+        $this->manager->table('users')->insert([
+            ['login' => 'taylor@example.com', 'authID' => 0, 'password' => '21'],
+        ]);
     }
 
     public function remove(int $id)
     {
-        // TODO: Implement remove() method.
+        $this->manager->table('users')->where('votes', '>', $id)->delete();
     }
 
     public function clear()
     {
-        // TODO: Implement clear() method.
+        $this->manager->table('users')->truncate();
     }
 
     public function change(array $item)
     {
-        // TODO: Implement change() method.
+        $this->manager->table('users')
+            ->where('id', 1)
+            ->update(['votes' => 1]);
     }
 }
