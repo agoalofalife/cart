@@ -3,7 +3,9 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-
+/**
+ * Class CreateCartItems
+ */
 class CreateCartItems extends Migration
 {
     /**
@@ -17,6 +19,7 @@ class CreateCartItems extends Migration
             $table->string('id')->index()->unique();
             $table->json('data');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
     /**
