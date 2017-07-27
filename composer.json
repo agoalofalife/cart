@@ -1,0 +1,12 @@
+{
+    "name": "agoalofalife/cart",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "agoalofalife",
+            "email": "agoalofalife@gmail.com"
+        }
+    ],
+    "require": {}
+}
