@@ -31,7 +31,7 @@ class Kernel
     protected $configPath = __DIR__. '/../config';
 
     protected $coreServices = [
-        Repository::class,
+        'config.singleton' => Repository::class,
     ];
 
     public function __construct(string $basePath = null)
@@ -46,10 +46,9 @@ class Kernel
 
     public function bootstrapping() : void
     {
-        foreach ($this->coreServices as $service) {
-            $this->app->bind($service);
-        }
+        $this->loadCoreServiceProvider();
         $this->loadConfigurationFiles();
+        $this->loadServiceProvider();
     }
 
     /**
@@ -57,7 +56,7 @@ class Kernel
      */
     protected function loadConfigurationFiles() : void
     {
-        $repository = app(Repository::class);
+        $repository = $this->app->make('config');
 
         foreach ($this->getConfigurationFiles() as $key => $path) {
             $repository->set($key, require $path);
@@ -79,5 +78,32 @@ class Kernel
         }
 
         return $files;
+    }
+
+    /**
+     * Load mandatory services for application
+     */
+    protected function loadCoreServiceProvider() : void
+    {
+        foreach ($this->coreServices as $abstract => $service) {
+            list($abstract, $type) = explode('.', $abstract);
+
+            if ($type == 'singleton') {
+                $this->app->singleton($abstract, $service);
+            } else {
+                $this->app->bind($abstract, $service);
+            }
+        }
+    }
+
+    /**
+     * Load service provider from config file
+     */
+    protected function loadServiceProvider() : void
+    {
+        foreach (config('app.services') as $services) {
+            /** @var ServiceProviderContract */
+            $services->register($this->app);
+        }
     }
 }

@@ -16,17 +16,17 @@ class DatabaseServiceProviders implements ServiceProviderContract
         $capsule = new Manager;
 
         $capsule->addConnection([
-            'driver'    => 'mysql',
-            'host'      => 'localhost',
-            'database'  => 'database',
-            'username'  => 'root',
-            'password'  => 'password',
-            'charset'   => 'utf8',
-            'collation' => 'utf8_unicode_ci',
-            'prefix'    => '',
+            'driver'    => config('drivers.database.driver'),
+            'host'      => config('drivers.database.host'),
+            'database'  => config('drivers.database.database'),
+            'username'  => config('drivers.database.username'),
+            'password'  => config('drivers.database.password'),
+            'charset'   => config('drivers.database.charset'),
+            'collation' => config('drivers.database.collation'),
+            'prefix'    => config('drivers.database.prefix'),
         ]);
 
-        $capsule->setEventDispatcher(new Dispatcher(new Container));
+        $capsule->setEventDispatcher(new Dispatcher(app()));
         $capsule->setAsGlobal();
         $capsule->bootEloquent();
         $container->bind(Manager::class, $capsule);
