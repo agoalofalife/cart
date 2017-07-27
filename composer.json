@@ -18,7 +18,8 @@
         "illuminate/database": "^5.4",
         "illuminate/events": "^5.4",
         "illuminate/config": "^5.4",
-        "symfony/finder": "^3.3"
+        "symfony/finder": "^3.3",
+        "symfony/console": "^3.3"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.6",
@@ -40,6 +41,9 @@
             "Cart\\Tests\\": "tests/"
         }
     },
+    "bin": [
+        "cart"
+    ],
     "scripts": {
         "test": "vendor/bin/phpunit"
     },
