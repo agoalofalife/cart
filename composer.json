@@ -1,6 +1,10 @@
 {
     "name": "agoalofalife/cart",
+    "description": "",
     "type": "library",
+    "keywords": [
+        "cart"
+    ],
     "license": "MIT",
     "authors": [
         {
@@ -8,5 +12,28 @@
             "email": "agoalofalife@gmail.com"
         }
     ],
-    "require": {}
+    "require": {
+        "php": ">=7.1"
+    },
+    "require-dev": {
+        "fzaninotto/faker": "^1.6",
+        "larapack/dd": "^1.1",
+        "mockery/mockery": "^0.9.9",
+        "phpunit/phpunit": "^6.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Cart\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Cart\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
