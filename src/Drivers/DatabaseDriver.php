@@ -21,7 +21,7 @@ class DatabaseDriver implements CartDriverContract
     public function add(array $item)
     {
         $this->manager->table('users')->insert([
-            ['login' => 'taylor@example.com', 'authID' => 0, 'password' => '21'],
+            $item
         ]);
     }
 
