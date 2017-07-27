@@ -12,5 +12,5 @@ use Illuminate\Container\Container;
  */
 interface ServiceProviderContract
 {
-    public function register(Container $container);
+    public function register(Container $container) : void;
 }

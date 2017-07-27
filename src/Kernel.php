@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cart;
 
+use Cart\Contracts\CartDriverContract;
 use Cart\Contracts\ServiceProviderContract;
 use Illuminate\Container\Container;
 use Illuminate\Config\Repository;
@@ -29,6 +30,10 @@ class Kernel
      * @var string
      */
     protected $configPath = __DIR__. '/../config';
+    /**
+     * @var CartDriverContract
+     */
+    protected $currentDriver;
 
     protected $coreServices = [
         'config.singleton' => Repository::class,
@@ -49,6 +54,14 @@ class Kernel
         $this->loadCoreServiceProvider();
         $this->loadConfigurationFiles();
         $this->loadServiceProvider();
+    }
+
+    /**
+     * Get type storage (Note: in config file)
+     */
+    public function getStorage() : CartDriverContract
+    {
+        return $this->app->make(config('app.storage'));
     }
 
     /**
@@ -103,7 +116,7 @@ class Kernel
     {
         foreach (config('app.services') as $services) {
             /** @var ServiceProviderContract */
-            $services->register($this->app);
+            (new $services)->register($this->app);
         }
     }
 }
