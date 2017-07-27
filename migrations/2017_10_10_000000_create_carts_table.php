@@ -1,12 +1,11 @@
 <?php
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Migrations\Migration;
 
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Capsule\Manager as Capsule;
 /**
  * Class CreateCartItems
  */
-class CreateCartItems extends Migration
+class CreateCartItems
 {
     /**
      * Run the migrations.
@@ -15,7 +14,7 @@ class CreateCartItems extends Migration
      */
     public function up()
     {
-        Schema::create('cart_items', function (Blueprint $table) {
+        Capsule::schema()->create('cart_items', function (Blueprint $table) {
             $table->string('id')->index()->unique();
             $table->json('data');
             $table->timestamps();
@@ -29,6 +28,6 @@ class CreateCartItems extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('cart_items');
+        Capsule::dropIfExists('cart_items');
     }
 }
