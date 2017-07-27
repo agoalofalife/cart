@@ -14,7 +14,8 @@
     ],
     "require": {
         "php": ">=7.1",
-        "league/container": "^3.0"
+        "illuminate/container": "^5.4",
+        "illuminate/database": "^5.4"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.6",
