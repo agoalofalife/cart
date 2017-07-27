@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Cart\Contracts;
 
+use Illuminate\Container\Container;
+
 /**
  * Interface ServiceProviderContract
  *
@@ -10,5 +12,5 @@ namespace Cart\Contracts;
  */
 interface ServiceProviderContract
 {
-    public function register();
+    public function register(Container $container);
 }
