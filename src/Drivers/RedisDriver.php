@@ -53,6 +53,7 @@ class RedisDriver implements CartDriverContract
                 call_user_func([$this, 'addItem'], $item);
             }
         } else {
+            $item['count'] = 1;
             $this->addRow($item);
         }
 

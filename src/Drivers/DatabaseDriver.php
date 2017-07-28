@@ -11,9 +11,6 @@ use Cart\CountOperation\ChangeCount;
 use Cart\Traits\Validate;
 use Illuminate\Database\Capsule\Manager;
 
-// TODO При совпадение товара увеличить на указанное кол -во :FIX
-// TODO Изменить структуру входящих аргументов
-
 /**
  * Class DatabaseDriver
  *
@@ -46,21 +43,19 @@ class DatabaseDriver implements CartDriverContract, SetTableDriver
     public function add(array $item) : bool
     {
         // validation structure
-        if ($this->validate($item, ['id', 'user_id', 'count']) === false) {
+        if ($this->validate($item, ['id', 'user_id']) === false) {
             return false;
         }
 
-        $userId = $item['user_id'];
-        unset($item['user_id']);
-
-        if ($this->existUser((int)$userId)) {
-            if ($this->existItem((int)$item['id'], (int)$userId)) {
-                call_user_func([$this, 'incrementItem'], (int)$item['id'], (int)$userId);
+        if ($this->existUser((int)$item['user_id'])) {
+            if ($this->existItem($item)) {
+                call_user_func([$this, 'incrementItem'], $item);
             } else {
-                call_user_func([$this, 'addItem'], (array)$item, (int)$userId);
+                call_user_func([$this, 'addItem'], $item);
             }
         } else {
-            $this->addRow((int)$userId, inJson([$item]));
+            $item['count'] = 1;
+            $this->addRow((int)$item['user_id'], inJson([$item]));
         }
 
         return true;
@@ -85,7 +80,7 @@ class DatabaseDriver implements CartDriverContract, SetTableDriver
             });
 
             if (count($itemFilter) > 0) {
-                $this->updateRow($item['user_id'], inJson([$itemFilter]));
+                $this->updateRow($item['user_id'], inJson(array_values($itemFilter)));
             } else {
                 $this->deleteRow($item['user_id']);
             }
@@ -142,44 +137,49 @@ class DatabaseDriver implements CartDriverContract, SetTableDriver
 
     /**
      * Check exit item in json collection
-     * @param int      $itemId
-     * @param int      $user
+     *
+     * @param array $item
      * @return bool
+     * @internal param int $itemId
+     * @internal param int $user
      */
-    private function existItem(int $itemId, int $user) : bool
+    private function existItem(array $item) : bool
     {
-        $collection = $this->manager->table($this->table)->where('user_id', $user)->get();
+        $collection = $this->manager->table($this->table)->where('user_id', $item['user_id'])->get();
 
         if ($collection->isNotEmpty()) {
-            return collect(fromJson($collection->first()->data))->contains('id', $itemId);
+            return collect(fromJson($collection->first()->data))->contains('id', $item['id']);
         }
         return false;
     }
 
     /**
      * Add new Item in collection
+     *
      * @param array $item
-     * @param int $user
+     * @internal param int $user
      */
-    private function addItem(array $item, int $user) :void
+    private function addItem(array $item) :void
     {
-        $collection = $this->manager->table($this->table)->where('user_id', $user)->get()->first();
+        $collection = $this->manager->table($this->table)->where('user_id', $item['user_id'])->get()->first();
         $items = fromJson($collection->data);
-
+        $item['count'] = 1;
         $items[] = $item;
 
-        $this->updateRow((int)$user, inJson($items));
+        $this->updateRow((int)$item['user_id'], inJson($items));
     }
 
     /**
      * Increment Item in json collection
-     * @param int $itemId
-     * @param int $user
+     *
+     * @param array $item
+     * @internal param int $itemId
+     * @internal param int $user
      */
-    private function incrementItem(int $itemId, int $user) :void
+    private function incrementItem(array $item) :void
     {
         app()->bind(AdditionCount::class, AdditionCount::class);
-        $this->counterItem($itemId, $user, 1, app()->make(AdditionCount::class));
+        $this->counterItem($item['id'], $item['user_id'], 1, app()->make(AdditionCount::class));
     }
 
     /**
