@@ -51,7 +51,7 @@ if (! function_exists('inJson')) {
      */
     function inJson(array $values = []) : string
     {
-      return json_encode($values);
+        return json_encode($values);
     }
 }
 
@@ -61,9 +61,9 @@ if (! function_exists('fromJson')) {
      *
      * @param string $json
      * @param bool   $assoc
-     * @return array
+     * @return mixed
      */
-    function fromJson(string $json = '', bool $assoc = false) : array
+    function fromJson(string $json = '', bool $assoc = false)
     {
         return json_decode($json, $assoc);
     }
