@@ -61,9 +61,9 @@ if (! function_exists('fromJson')) {
      *
      * @param string $json
      * @param bool   $assoc
-     * @return string
+     * @return array
      */
-    function fromJson(string $json = '', bool $assoc = false) : string
+    function fromJson(string $json = '', bool $assoc = false) : array
     {
         return json_decode($json, $assoc);
     }
