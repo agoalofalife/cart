@@ -61,10 +61,11 @@ if (! function_exists('fromJson')) {
      *
      * @param string $json
      * @param bool   $assoc
+     * @param int    $depth
      * @return mixed
      */
-    function fromJson(string $json = '', bool $assoc = false)
+    function fromJson(string $json = '', bool $assoc = false, int $depth = 512)
     {
-        return json_decode($json, $assoc);
+        return json_decode($json, $assoc, $depth);
     }
 }
