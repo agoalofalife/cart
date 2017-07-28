@@ -16,6 +16,7 @@ class CreateCartItems
     {
         Capsule::schema()->create('cart_items', function (Blueprint $table) {
             $table->increments('id')->index()->unique();
+            $table->integer('user_id')->unique();
             $table->json('data');
             $table->timestamps();
             $table->softDeletes();
