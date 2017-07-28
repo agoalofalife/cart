@@ -16,7 +16,10 @@ use Predis\Client;
  */
 class RedisDriver implements CartDriverContract
 {
-    const UNIQUEPREFIX = 'cart';
+    /**
+     * @var string
+     */
+    protected $prefix = 'cart';
 
     use Validate;
 
@@ -28,6 +31,7 @@ class RedisDriver implements CartDriverContract
     public function __construct(Client $client)
     {
         $this->redis = $client;
+        $this->prefix = config('app.drivers.redis.prefix');
     }
 
     /**
@@ -157,7 +161,7 @@ class RedisDriver implements CartDriverContract
      */
     private function normalizeKey(int $userId) : string
     {
-        return $userId . '.' .self::UNIQUEPREFIX;
+        return $userId . '.' . $this->prefix;
     }
 
     /**
