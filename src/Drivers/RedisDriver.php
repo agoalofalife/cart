@@ -116,10 +116,12 @@ class RedisDriver implements CartDriverContract
     {
         app()->bind(AdditionCount::class, AdditionCount::class);
 
-        $item = unserialize($this->redis->hget($this->normalizeKey((int)$item['user_id']), $item['id']));
+        $itemFromRedis = unserialize($this->redis->hget($this->normalizeKey((int)$item['user_id']), $item['id']));
 
-        $item['count'] = app()->make(AdditionCount::class)->execute((int)$item['count'], 1);
-        $this->addRow($item);
+        $itemFromRedis['count'] = app()->make(AdditionCount::class)
+                                        ->execute((int)$item['count'], (int)$itemFromRedis['count']);
+
+        $this->addRow($itemFromRedis);
     }
 
     private function addItem(array $item) : void
