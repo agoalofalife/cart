@@ -16,17 +16,19 @@ interface CartDriverContract
     public function add(array $item) : bool ;
 
     /**
-     * Remove item from ccart
-     * @param int $id
+     * Remove item from cart
+     * @param array $itemId
      * @return mixed
      */
-    public function remove(int $id):bool ;
+    public function remove(array $itemId):bool ;
 
     /**
      * Clear cart for concrete relation entity
-     * @return mixed
+     *
+     * @param int $entityId
+     * @return mixed|void
      */
-    public function clear():void;
+    public function clear(int $entityId):void;
 
     /**
      * Change item(position)

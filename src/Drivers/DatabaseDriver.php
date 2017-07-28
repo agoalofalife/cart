@@ -33,7 +33,7 @@ class DatabaseDriver implements CartDriverContract, SetTableDriver
     public function add(array $item) : bool
     {
         // validation structure
-        if (isset($item['id']) === false || isset($item['user_id']) === false || isset($item['count']) === false) {
+        if ($this->validate($item, ['id', 'user_id', 'count']) === false) {
             return false;
         }
 
@@ -53,12 +53,35 @@ class DatabaseDriver implements CartDriverContract, SetTableDriver
         return true;
     }
 
-    public function remove(int $id) : bool
+    /**
+     * Remove item from cart
+     * @param array $item
+     * @return bool
+     */
+    public function remove(array $item) : bool
     {
-        $this->manager->table($this->table)->where('id', '=', $id)->delete();
+        if ($this->validate($item, ['id', 'user_id']) === false) {
+            return false;
+        }
+
+        $collection = $this->manager->table($this->table)->where('user_id', '=', $item['user_id'])->get();
+
+        if ($collection->isNotEmpty()) {
+            $itemFilter = array_filter(fromJson($collection->first()->data, true), function ($value) use ($item) {
+                return $value['id'] != $item['id'];
+            });
+            if (count($itemFilter) > 0) {
+                $this->updateRow($item['user_id'], inJson($itemFilter));
+            } else {
+                $this->deleteRow($item['user_id']);
+            }
+
+            return true;
+        }
+           return false;
     }
 
-    public function clear() : void
+    public function clear(int $entityId) : void
     {
         $this->manager->table($this->table)->truncate();
     }
@@ -77,6 +100,24 @@ class DatabaseDriver implements CartDriverContract, SetTableDriver
     public function setTable(string $name = 'cart_items'): void
     {
         $this->table = $name;
+    }
+
+    /**
+     * Validate input parameters
+     *
+     * @param array $item
+     * @param array $require
+     * @return bool
+     * @internal param array $required
+     */
+    private function validate(array $item, array $require = []) : bool
+    {
+        foreach ($require as $parameter) {
+            if (isset($item[$parameter]) === false) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -163,5 +204,13 @@ class DatabaseDriver implements CartDriverContract, SetTableDriver
         $this->manager->table($this->table)->where('user_id', $user)->update([
             'data' => $values
         ]);
+    }
+
+    /**
+     * @param int $user
+     */
+    private function deleteRow(int $user) : void
+    {
+        $this->manager->table($this->table)->where('user_id', $user)->delete();
     }
 }
