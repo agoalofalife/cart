@@ -41,3 +41,30 @@ if (! function_exists('app')) {
             : Container::getInstance()->makeWith($abstract, $parameters);
     }
 }
+
+if (! function_exists('inJson')) {
+    /**
+     * Sugar json_encode
+     *
+     * @param array $values
+     * @return string
+     */
+    function inJson(array $values = []) : string
+    {
+      return json_encode($values);
+    }
+}
+
+if (! function_exists('inJson')) {
+    /**
+     * Sugar json_encode
+     *
+     * @param string $json
+     * @param bool   $assoc
+     * @return string
+     */
+    function fromJson(string $json = '', bool $assoc = false) : string
+    {
+        return json_decode($json, $assoc);
+    }
+}
