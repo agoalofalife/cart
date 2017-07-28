@@ -25,6 +25,7 @@ class MigrateRollbackCommand extends Command
             $diff = array_diff(get_declared_classes(), $classes);
             $class = reset($diff);
             (new $class())->down();
+            $output->writeln('<fg=green>Success rollback migration: ' . basename($file->getFilename(), '.php') .'</>');
         }
     }
 }

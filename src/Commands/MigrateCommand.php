@@ -32,6 +32,7 @@ class MigrateCommand extends Command
             $diff = array_diff(get_declared_classes(), $classes);
             $class = reset($diff);
             (new $class())->up();
+            $output->writeln('<fg=green>Success added migration: ' . basename($file->getFilename(), '.php') .'</>');
         }
     }
 }
