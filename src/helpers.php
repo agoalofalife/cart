@@ -55,7 +55,7 @@ if (! function_exists('inJson')) {
     }
 }
 
-if (! function_exists('inJson')) {
+if (! function_exists('fromJson')) {
     /**
      * Sugar json_encode
      *
