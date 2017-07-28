@@ -11,6 +11,9 @@ use Cart\CountOperation\ChangeCount;
 use Cart\Traits\Validate;
 use Illuminate\Database\Capsule\Manager;
 
+// TODO При совпадение товара увеличить на указанное кол -во :FIX
+// TODO Изменить структуру входящих аргументов
+
 /**
  * Class DatabaseDriver
  *
