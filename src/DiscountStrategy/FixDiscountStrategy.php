@@ -17,6 +17,6 @@ class FixDiscountStrategy implements DiscountContract
      */
     public function make(int $basePrice, $relation): int
     {
-        return $basePrice = $relation;
+        return $basePrice - $relation;
     }
 }
