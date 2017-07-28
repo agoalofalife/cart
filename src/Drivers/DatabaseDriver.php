@@ -5,6 +5,7 @@ namespace Cart\Drivers;
 
 use Cart\Contracts\CartDriverContract;
 use Cart\Contracts\CounterItemContract;
+use Cart\Contracts\DiscountContract;
 use Cart\Contracts\SetTableDriver;
 use Cart\CountOperation\AdditionCount;
 use Cart\CountOperation\ChangeCount;
@@ -123,6 +124,15 @@ class DatabaseDriver implements CartDriverContract, SetTableDriver
     public function setTable(string $name = 'cart_items'): void
     {
         $this->table = $name;
+    }
+
+    /**
+     * @param DiscountContract $strategy
+     * @return int
+     */
+    public function discount(DiscountContract $strategy) : int
+    {
+
     }
 
     /**
