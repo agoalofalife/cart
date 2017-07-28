@@ -4,7 +4,10 @@ declare(strict_types=1);
 namespace Cart\Drivers;
 
 use Cart\Contracts\CartDriverContract;
+use Cart\Contracts\CounterItemContract;
 use Cart\Contracts\SetTableDriver;
+use Cart\CountOperation\AdditionCount;
+use Cart\CountOperation\ChangeCount;
 use Illuminate\Database\Capsule\Manager;
 
 class DatabaseDriver implements CartDriverContract, SetTableDriver
@@ -70,8 +73,9 @@ class DatabaseDriver implements CartDriverContract, SetTableDriver
             $itemFilter = array_filter(fromJson($collection->first()->data, true), function ($value) use ($item) {
                 return $value['id'] != $item['id'];
             });
+
             if (count($itemFilter) > 0) {
-                $this->updateRow($item['user_id'], inJson($itemFilter));
+                $this->updateRow($item['user_id'], inJson([$itemFilter]));
             } else {
                 $this->deleteRow($item['user_id']);
             }
@@ -91,11 +95,20 @@ class DatabaseDriver implements CartDriverContract, SetTableDriver
         $this->deleteRow($entityId);
     }
 
-    public function change(array $item)
+    /**
+     * Change item(position)
+     * @param array $item
+     * @return bool
+     */
+    public function change(array $item) : bool
     {
-        $this->manager->table($this->table)
-            ->where('id', 1)
-            ->update($item);
+        if ($this->validate($item, ['id', 'user_id', 'count']) === false) {
+            return false;
+        }
+
+        app()->bind(ChangeCount::class, ChangeCount::class);
+
+        return $this->counterItem($item['id'], $item['user_id'], $item['count'], app()->make(ChangeCount::class));
     }
 
     /**
@@ -160,6 +173,7 @@ class DatabaseDriver implements CartDriverContract, SetTableDriver
     {
         $collection = $this->manager->table($this->table)->where('user_id', $user)->get()->first();
         $items = fromJson($collection->data);
+
         $items[] = $item;
 
         $this->updateRow((int)$user, inJson($items));
@@ -172,20 +186,42 @@ class DatabaseDriver implements CartDriverContract, SetTableDriver
      */
     private function incrementItem(int $itemId, int $user) :void
     {
-        $collection = $this->manager->table($this->table)->where('user_id', $user)->get()->first();
+        app()->bind(AdditionCount::class, AdditionCount::class);
+        $this->counterItem($itemId, $user, 1, app()->make(AdditionCount::class));
+    }
 
-        $items = fromJson($collection->data, true);
+    /**
+     * @param int                 $itemId
+     * @param int                 $user
+     * @param int                 $counterUp
+     * @param CounterItemContract $typeOperation
+     * @return bool
+     */
+    private function counterItem(int $itemId, int $user, int $counterUp, CounterItemContract $typeOperation) : bool
+    {
+        $collection = $this->manager->table($this->table)->where('user_id', $user)->get();
+
+        if ($collection->isEmpty()) {
+            return false;
+        }
+        $items = fromJson($collection->first()->data, true);
 
         $targetItem = array_filter($items, function ($value) use ($itemId) {
             return $value['id'] == $itemId;
         });
 
         $item = reset($targetItem);
-        $item['count']++;
 
-        $this->updateRow((int)$user, inJson($item));
+        $item['count'] = $typeOperation->execute((int)$item['count'], $counterUp);
+
+        if ($item['count'] == 0) {
+            $this->remove(['id' => $itemId, 'user_id' => $user]);
+        } else {
+            $this->updateRow((int)$user, inJson([$item]));
+        }
+
+        return true;
     }
-
     /**
      * Empty fill row table
      * @param int   $user
