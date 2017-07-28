@@ -42,7 +42,7 @@ class RedisDriver implements CartDriverContract
      */
     public function add(array $item): bool
     {
-        if ($this->validate($item, ['id', 'user_id', 'count']) === false) {
+        if ($this->validate($item, ['id', 'user_id']) === false) {
             return false;
         }
 
@@ -123,7 +123,7 @@ class RedisDriver implements CartDriverContract
         $itemFromRedis = unserialize($this->redis->hget($this->normalizeKey((int)$item['user_id']), $item['id']));
 
         $itemFromRedis['count'] = app()->make(AdditionCount::class)
-                                        ->execute((int)$item['count'], (int)$itemFromRedis['count']);
+                                        ->execute(1, (int)$itemFromRedis['count']);
 
         $this->addRow($itemFromRedis);
     }
