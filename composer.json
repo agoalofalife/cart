@@ -19,7 +19,8 @@
         "illuminate/events": "^5.4",
         "illuminate/config": "^5.4",
         "symfony/finder": "^3.3",
-        "symfony/console": "^3.3"
+        "symfony/console": "^3.3",
+        "predis/predis": "^1.1"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.6",
