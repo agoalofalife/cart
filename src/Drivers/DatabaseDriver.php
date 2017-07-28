@@ -8,10 +8,17 @@ use Cart\Contracts\CounterItemContract;
 use Cart\Contracts\SetTableDriver;
 use Cart\CountOperation\AdditionCount;
 use Cart\CountOperation\ChangeCount;
+use Cart\Traits\Validate;
 use Illuminate\Database\Capsule\Manager;
 
+/**
+ * Class DatabaseDriver
+ *
+ * @package Cart\Drivers
+ */
 class DatabaseDriver implements CartDriverContract, SetTableDriver
 {
+    use Validate;
     /**
      * @var Manager
      */
@@ -118,24 +125,6 @@ class DatabaseDriver implements CartDriverContract, SetTableDriver
     public function setTable(string $name = 'cart_items'): void
     {
         $this->table = $name;
-    }
-
-    /**
-     * Validate input parameters
-     *
-     * @param array $item
-     * @param array $require
-     * @return bool
-     * @internal param array $required
-     */
-    private function validate(array $item, array $require = []) : bool
-    {
-        foreach ($require as $parameter) {
-            if (isset($item[$parameter]) === false) {
-                return false;
-            }
-        }
-        return true;
     }
 
     /**
