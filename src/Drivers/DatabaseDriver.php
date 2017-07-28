@@ -81,9 +81,14 @@ class DatabaseDriver implements CartDriverContract, SetTableDriver
            return false;
     }
 
+    /**
+     * Clear cart for concrete relation entity
+     * @param int $entityId
+     * @return void
+     */
     public function clear(int $entityId) : void
     {
-        $this->manager->table($this->table)->truncate();
+        $this->deleteRow($entityId);
     }
 
     public function change(array $item)
