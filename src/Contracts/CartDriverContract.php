@@ -35,5 +35,5 @@ interface CartDriverContract
      * @param array $item
      * @return mixed
      */
-    public function change(array $item);
+    public function change(array $item) : bool ;
 }
