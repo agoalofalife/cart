@@ -22,11 +22,6 @@ class Kernel
     protected $app;
 
     /**
-     * @var ServiceProviderContract
-     */
-    protected $services;
-
-    /**
      * @var string
      */
     protected $configPath = __DIR__. '/../config';
@@ -42,11 +37,6 @@ class Kernel
     public function __construct(string $basePath = null)
     {
         $this->app = Container::getInstance();
-    }
-
-    public function addService(ServiceProviderContract $service) : void
-    {
-        $this->services[] = $service;
     }
 
     public function bootstrapping() : void
