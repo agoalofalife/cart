@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Cart\Tests\Unit;
 
 use Cart\Contracts\CartDriverContract;
@@ -25,5 +26,6 @@ class KernelTest extends TestCase
     public function testGetStorage() : void
     {
         $this->assertInstanceOf(CartDriverContract::class, $this->kernel->getStorage());
+        app()->flush();
     }
 }
