@@ -46,7 +46,8 @@
         "cart"
     ],
     "scripts": {
-        "test": "vendor/bin/phpunit"
+        "test": "vendor/bin/phpunit",
+        "testd": "vendor/bin/phpunit --stop-on-failure --no-coverage"
     },
     "minimum-stability": "dev",
     "prefer-stable": true
