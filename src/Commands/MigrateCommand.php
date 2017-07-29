@@ -25,12 +25,13 @@ class MigrateCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        foreach (Finder::create()->files()->name('*.php')->in(__DIR__. '/../../migrations') as $file) {
-
+        foreach (Finder::create()->files()->name('*.php')->
+                                in(__DIR__. '/../../migrations') as $file) {
             $classes = get_declared_classes();
             include $file->getRealPath();
             $diff = array_diff(get_declared_classes(), $classes);
             $class = reset($diff);
+
             (new $class())->up();
             $output->writeln('<fg=green>Success added migration: ' . basename($file->getFilename(), '.php') .'</>');
         }
