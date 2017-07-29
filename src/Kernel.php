@@ -34,7 +34,7 @@ class Kernel
         'config.singleton' => Repository::class,
     ];
 
-    public function __construct(string $basePath = null)
+    public function __construct()
     {
         $this->app = Container::getInstance();
     }

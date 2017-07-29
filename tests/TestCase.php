@@ -1,5 +1,6 @@
 <?php
-namespace agoalofalife\Tests;
+declare(strict_types=1);
+namespace Cart\Tests;
 
 use Mockery;
 use Faker\Factory;
