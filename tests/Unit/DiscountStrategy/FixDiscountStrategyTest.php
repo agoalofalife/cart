@@ -7,7 +7,7 @@ use Cart\Tests\TestCase;
 
 class FixDiscountStrategyTest extends TestCase
 {
-    public function testMake()
+    public function testMake() : void
     {
         $sign  = $this->faker()->randomDigit;
         $base  = $this->faker()->randomDigit;

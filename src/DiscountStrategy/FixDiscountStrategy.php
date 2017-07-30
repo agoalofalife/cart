@@ -21,9 +21,9 @@ class FixDiscountStrategy implements DiscountContract
      * Make Discount
      *
      * @param int $basePrice
-     * @return int
+     * @return float
      */
-    public function make(int $basePrice): int
+    public function make(int $basePrice): float
     {
         $price = $basePrice - $this->sign;
         if ($price < 0) {
