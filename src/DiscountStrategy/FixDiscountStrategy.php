@@ -7,16 +7,28 @@ use Cart\Contracts\DiscountContract;
 
 class FixDiscountStrategy implements DiscountContract
 {
+    /**
+     * @var int
+     */
+    protected $sign;
+
+    public function __construct(int $sign)
+    {
+        $this->sign = $sign;
+    }
 
     /**
      * Make Discount
      *
      * @param int $basePrice
-     * @param     $relation
      * @return int
      */
-    public function make(int $basePrice, $relation): int
+    public function make(int $basePrice): int
     {
-        return $basePrice - $relation;
+        $price = $basePrice - $this->sign;
+        if ($price < 0) {
+            $price =  0 ;
+        }
+        return $price;
     }
 }

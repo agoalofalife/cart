@@ -8,14 +8,23 @@ use Cart\Contracts\DiscountContract;
 class PercentageStrategy implements DiscountContract
 {
     /**
+     * @var int
+     */
+    protected $sign;
+
+    public function __construct(int $sign)
+    {
+        $this->sign = $sign;
+    }
+
+    /**
      * Make Discount
      *
      * @param int $basePrice
-     * @param     $percentage
      * @return int
      */
-    public function make(int $basePrice, $percentage): int
+    public function make(int $basePrice): int
     {
-        return $basePrice / 100 * $percentage;
+        return $basePrice / 100 * $this->sign;
     }
 }

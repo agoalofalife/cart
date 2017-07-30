@@ -6,6 +6,7 @@ namespace Cart\Drivers;
 use Cart\Contracts\CartDriverContract;
 use Cart\Contracts\CounterItemContract;
 use Cart\Contracts\DiscountContract;
+use Cart\Contracts\DiscountDriverContract;
 use Cart\Contracts\SetTableDriver;
 use Cart\CountOperation\AdditionCount;
 use Cart\CountOperation\ChangeCount;
@@ -17,7 +18,7 @@ use Illuminate\Database\Capsule\Manager;
  *
  * @package Cart\Drivers
  */
-class DatabaseDriver implements CartDriverContract, SetTableDriver
+class DatabaseDriver implements CartDriverContract, SetTableDriver, DiscountDriverContract
 {
     use Validate;
     /**
@@ -128,11 +129,32 @@ class DatabaseDriver implements CartDriverContract, SetTableDriver
 
     /**
      * @param DiscountContract $strategy
-     * @return int
+     * @param array $items
+     * @return bool
      */
-    public function discount(DiscountContract $strategy) : int
+    public function discount(DiscountContract $strategy, array $items) : bool
     {
+        // validation structure
+        if ($this->validate($items, ['id', 'user_id', 'price']) === false) {
+            return false;
+        }
 
+        $newPrice = $strategy->make($items['price']);
+        $row = $this->manager->table($this->table)->where('user_id', $items['user_id'])->get();
+
+        if ($row->isNotEmpty()) {
+            $transformItems = array_map(function ($value) use ($items, $newPrice) {
+                if ($value['id'] == $items['id']) {
+                     $value['discount'] = $newPrice;
+                     return $value;
+                }
+                return $value;
+            }, fromJson($row->first()->data, true));
+
+            $this->updateRow($items['user_id'], inJson($transformItems));
+            return true;
+        }
+         return false;
     }
 
     /**

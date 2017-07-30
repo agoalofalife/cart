@@ -9,8 +9,7 @@ interface DiscountContract
      * Make Discount
      *
      * @param int $basePrice
-     * @param     $relation
      * @return int
      */
-    public function make(int $basePrice, $relation) : int;
+    public function make(int $basePrice) : int;
 }
