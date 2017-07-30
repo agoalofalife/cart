@@ -105,17 +105,16 @@ class DatabaseDriver implements CartDriverContract, SetTableDriver, DiscountDriv
     /**
      * Change item(position)
      * @param array $item
+     * @param CounterItemContract $itemContract
      * @return bool
      */
-    public function change(array $item) : bool
+    public function change(array $item, CounterItemContract $itemContract) : bool
     {
         if ($this->validate($item, ['id', 'user_id', 'count']) === false) {
             return false;
         }
 
-        app()->bind(ChangeCount::class, ChangeCount::class);
-
-        return $this->counterItem($item['id'], $item['user_id'], $item['count'], app()->make(ChangeCount::class));
+        return $this->counterItem($item['id'], $item['user_id'], $item['count'], $itemContract);
     }
 
     /**
@@ -180,7 +179,7 @@ class DatabaseDriver implements CartDriverContract, SetTableDriver, DiscountDriv
         $collection = $this->manager->table($this->table)->where('user_id', $item['user_id'])->get();
 
         if ($collection->isNotEmpty()) {
-            return collect(fromJson($collection->first()->data))->contains('id', $item['id']);
+            return $collection->make(fromJson($collection->first()->data))->contains('id', $item['id']);
         }
         return false;
     }

@@ -33,7 +33,8 @@ interface CartDriverContract
     /**
      * Change item(position)
      * @param array $item
+     * @param CounterItemContract $itemContract
      * @return mixed
      */
-    public function change(array $item) : bool ;
+    public function change(array $item, CounterItemContract $itemContract) : bool ;
 }

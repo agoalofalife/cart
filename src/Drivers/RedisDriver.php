@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Cart\Drivers;
 
 use Cart\Contracts\CartDriverContract;
+use Cart\Contracts\CounterItemContract;
 use Cart\Contracts\DiscountContract;
 use Cart\Contracts\DiscountDriverContract;
 use Cart\CountOperation\AdditionCount;
@@ -94,15 +95,15 @@ class RedisDriver implements CartDriverContract, DiscountDriverContract
      * Change item(position)
      *
      * @param array $item
-     * @return mixed
+     * @param CounterItemContract $itemContract
+     * @return bool
      */
-    public function change(array $item): bool
+    public function change(array $item, CounterItemContract $itemContract): bool
     {
         if ($this->validate($item, ['id', 'user_id', 'count']) === false) {
             return false;
         }
 
-        app()->bind(ChangeCount::class, ChangeCount::class);
         $itemFromRedis = $this->redis->hget($this->normalizeKey((int)$item['user_id']), $item['id']);
 
         if (!is_null($itemFromRedis)) {
@@ -111,7 +112,7 @@ class RedisDriver implements CartDriverContract, DiscountDriverContract
             return false;
         }
 
-        $item['count'] = app()->make(ChangeCount::class)->execute((int)$itemFromRedis['count'], $item['count']);
+        $item['count'] = $itemContract->execute((int)$itemFromRedis['count'], $item['count']);
         $this->addRow($item);
         return true;
     }
