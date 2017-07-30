@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Cart\Drivers;
 
 use Cart\Contracts\CartDriverContract;
+use Cart\Contracts\DiscountContract;
+use Cart\Contracts\DiscountDriverContract;
 use Cart\CountOperation\AdditionCount;
 use Cart\CountOperation\ChangeCount;
 use Cart\Traits\Validate;
@@ -14,7 +16,7 @@ use Predis\Client;
  *
  * @package Cart\Drivers
  */
-class RedisDriver implements CartDriverContract
+class RedisDriver implements CartDriverContract, DiscountDriverContract
 {
     /**
      * @var string
@@ -112,6 +114,30 @@ class RedisDriver implements CartDriverContract
         $item['count'] = app()->make(ChangeCount::class)->execute((int)$itemFromRedis['count'], $item['count']);
         $this->addRow($item);
         return true;
+    }
+
+    /**
+     * Make Discount
+     * @param DiscountContract $contract
+     * @param array $item
+     * @return bool
+     */
+    public function discount(DiscountContract $contract, array $item): bool
+    {
+        if ($this->validate($item, ['id', 'user_id', 'price']) === false) {
+            return false;
+        }
+
+        $itemFromRedis = $this->redis->hget($this->normalizeKey((int)$item['user_id']), $item['id']);
+
+        if (!is_null($itemFromRedis)) {
+            $itemFromRedis = unserialize($itemFromRedis);
+            $itemFromRedis['discount'] = $contract->make($itemFromRedis['price']);
+            $this->redis->hset($this->normalizeKey((int)$item['user_id']), $item['id'], serialize($itemFromRedis));
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
