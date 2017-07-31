@@ -6,7 +6,6 @@
 [![Build Status](https://scrutinizer-ci.com/g/agoalofalife/cart/badges/build.png?b=master)](https://scrutinizer-ci.com/g/agoalofalife/cart/build-status/master)
 
 
-
 **Что это такое?**
 
  Это простой пакет для хранение товаров в корзине магазина. 
@@ -14,9 +13,8 @@
 
 - [Требования](#Required)
 - [Установка](#Installation)
-- [Настройка конфигураций](#Config)
-- [Аутенфикация](#Authentication)
-- [Установка коллекции](#SetCollection)
+- [Драйвера](#Drivers)
+- [Написание своего драйвера](#CustomDriver)
 - [Интеграция с Laravel](#Laravel)
 
 
@@ -30,6 +28,7 @@
 ```
 
 <a name="Installation"></a>
+**Установка**
 
 Достаточно выполнить 
 
@@ -37,4 +36,21 @@
 composer require agoalofalife/cart
 ```
 
+<a name="Laravel"></a>
+**Интеграция с Laravel**
 
+Для того чтобы интегрировать библиотеку в Laravel необходимо :
+
+- Установить через composer
+
+-  Выполнить команду :
+```
+./vendor/bin/cart migrate:laravel   
+```
+ Тем самым скопировать файл конфигурации и миграцию в исходные папки Laravel
+
+- Получить driver из контейнера и работать с ним (Предварительно установив все настройки и выполнив миграцию , если используется драйвер базы данных.)
+
+```
+app('cart')-> ...
+```
