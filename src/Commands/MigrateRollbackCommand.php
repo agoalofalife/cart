@@ -18,8 +18,8 @@ class MigrateRollbackCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        foreach (Finder::create()->files()->name('*.php')->in(__DIR__. '/../../migrations') as $file) {
-
+        foreach (Finder::create()->files()->name('*.php')
+                     ->in(__DIR__. '/../../migrations') as $file) {
             $classes = get_declared_classes();
             include $file->getRealPath();
             $diff = array_diff(get_declared_classes(), $classes);

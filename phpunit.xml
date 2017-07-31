@@ -21,10 +21,11 @@
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">./src</directory>
-
             <exclude>
-                <file>./src/Conversation/ConversationCreator.php</file>
+                <file>./src/Commands/MigrateRollbackCommand.php</file>
+                <file>./src/Commands/MigrateCommand.php</file>
             </exclude>
+
         </whitelist>
     </filter>
     <logging>
