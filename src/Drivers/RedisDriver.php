@@ -8,7 +8,6 @@ use Cart\Contracts\CounterItemContract;
 use Cart\Contracts\DiscountContract;
 use Cart\Contracts\DiscountDriverContract;
 use Cart\CountOperation\AdditionCount;
-use Cart\CountOperation\ChangeCount;
 use Cart\Traits\Validate;
 use Predis\Client;
 
