@@ -18,10 +18,12 @@ class RedisServiceProviderTest extends TestCase
 
         $config->shouldReceive('get')->with('app.drivers.redis.port', null)->andReturn(6379);
         $config->shouldReceive('get')->with('app.drivers.redis.scheme', null)->andReturn('tcp');
+        $config->shouldReceive('get')->with('app.drivers.redis.prefix', null)->andReturn('cart');
         $config->shouldReceive('get')->with('app.drivers.redis.host', null)->andReturn('127.0.0.1');
 
         app()->instance('config', $config);
         $provider->register(app());
         $this->assertTrue(app()->bound(RedisDriver::class));
+        $this->assertInstanceOf(RedisDriver::class, app()->make(RedisDriver::class));
     }
 }

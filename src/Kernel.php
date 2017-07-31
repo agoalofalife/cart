@@ -93,8 +93,6 @@ class Kernel
 
             if ($type == 'singleton') {
                 $this->app->singleton($abstract, $service);
-            } else {
-                $this->app->bind($abstract, $service);
             }
         }
     }
