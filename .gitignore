@@ -3,3 +3,4 @@ composer.lock
 index.php
 /tests/Coverage
 clover.xml
+laravel

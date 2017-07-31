@@ -23,7 +23,9 @@
             <directory suffix=".php">./src</directory>
             <exclude>
                 <file>./src/Commands/MigrateRollbackCommand.php</file>
+                <file>./src/Commands/MigrateLaravelCommand.php</file>
                 <file>./src/Commands/MigrateCommand.php</file>
+                <file>./src/ServiceProviders/CartServiceProvider.php</file>
             </exclude>
 
         </whitelist>
