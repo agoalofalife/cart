@@ -22,15 +22,6 @@ class Kernel
      */
     protected $app;
 
-    /**
-     * @var string
-     */
-    protected $configPath = __DIR__. '/../config';
-    /**
-     * @var CartDriverContract
-     */
-    protected $currentDriver;
-
     protected $coreServices = [
         'config.singleton' => Repository::class,
     ];
@@ -60,7 +51,17 @@ class Kernel
     public function loadConfiguration(SourceConfiguration $configuration) :  void
     {
         config()->set($configuration->getName(), $configuration->get());
-        $this->loadServiceProvider();
+    }
+
+    /**
+     * Load service provider from config file
+     */
+    public function loadServiceProvider() : void
+    {
+        foreach (config('cart.services') as $services) {
+            /** @var ServiceProviderContract */
+            (new $services)->register($this->app);
+        }
     }
 
     /**
@@ -76,17 +77,6 @@ class Kernel
                     $this->app->singleton($abstract, $service);
                 }
             }
-        }
-    }
-
-    /**
-     * Load service provider from config file
-     */
-    protected function loadServiceProvider() : void
-    {
-        foreach (config('cart.services') as $services) {
-            /** @var ServiceProviderContract */
-            (new $services)->register($this->app);
         }
     }
 }
