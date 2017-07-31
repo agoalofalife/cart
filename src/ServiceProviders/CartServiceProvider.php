@@ -17,7 +17,7 @@ class CartServiceProvider extends ServiceProvider
     {
         $this->app->bind('cart', function () {
             $kernel = new Kernel();
-            $kernel->bootstrapping();
+            $kernel->bootstrapping('laravel');
             return $kernel->getStorage();
         });
     }

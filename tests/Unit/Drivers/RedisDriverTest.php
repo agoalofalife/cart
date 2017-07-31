@@ -36,7 +36,7 @@ class RedisDriverTest extends TestCase
         $this->redis = $this->mock(Client::class);
         $this->repository = $this->mock(Repository::class);
         app()->instance('config', $this->repository);
-        $this->repository->shouldReceive('get')->with('app.drivers.redis.prefix', null);
+        $this->repository->shouldReceive('get')->with('cart.drivers.redis.prefix', null);
         $this->driver = new RedisDriver($this->redis);
     }
 

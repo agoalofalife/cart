@@ -10,6 +10,7 @@ class HelpersTest extends TestCase
 {
     public function setUp()
     {
+        app()->flush();
         $kernel = new Kernel();
         $kernel->bootstrapping();
     }

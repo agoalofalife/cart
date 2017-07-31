@@ -13,9 +13,9 @@ class RedisServiceProvider implements ServiceProviderContract
     public function register(Container $container) : void
     {
         $redis =  new Client([
-            'scheme' => config('app.drivers.redis.scheme'),
-            'host'   => config('app.drivers.redis.host'),
-            'port'   => config('app.drivers.redis.port')
+            'scheme' => config('cart.drivers.redis.scheme'),
+            'host'   => config('cart.drivers.redis.host'),
+            'port'   => config('cart.drivers.redis.port')
         ]);
 
         $container->instance(Client::class, $redis);

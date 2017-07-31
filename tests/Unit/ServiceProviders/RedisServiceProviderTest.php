@@ -16,10 +16,10 @@ class RedisServiceProviderTest extends TestCase
         $this->assertFalse(app()->bound(RedisDriver::class));
         $config = $this->mock(Repository::class);
 
-        $config->shouldReceive('get')->with('app.drivers.redis.port', null)->andReturn(6379);
-        $config->shouldReceive('get')->with('app.drivers.redis.scheme', null)->andReturn('tcp');
-        $config->shouldReceive('get')->with('app.drivers.redis.prefix', null)->andReturn('cart');
-        $config->shouldReceive('get')->with('app.drivers.redis.host', null)->andReturn('127.0.0.1');
+        $config->shouldReceive('get')->with('cart.drivers.redis.port', null)->andReturn(6379);
+        $config->shouldReceive('get')->with('cart.drivers.redis.scheme', null)->andReturn('tcp');
+        $config->shouldReceive('get')->with('cart.drivers.redis.prefix', null)->andReturn('cart');
+        $config->shouldReceive('get')->with('cart.drivers.redis.host', null)->andReturn('127.0.0.1');
 
         app()->instance('config', $config);
         $provider->register(app());

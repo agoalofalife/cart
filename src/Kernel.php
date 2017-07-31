@@ -39,11 +39,18 @@ class Kernel
         $this->app = Container::getInstance();
     }
 
-    public function bootstrapping() : void
+    public function bootstrapping($mode = 'base') : void
     {
-        $this->loadCoreServiceProvider();
-        $this->loadConfigurationFiles();
-        $this->loadServiceProvider();
+        switch ($mode) {
+            case 'base':
+                $this->loadCoreServiceProvider();
+                $this->loadConfigurationFiles();
+                $this->loadServiceProvider();
+                break;
+            case 'laravel':
+                $this->loadCoreServiceProvider();
+                $this->loadServiceProvider();
+        }
     }
 
     /**
@@ -51,13 +58,13 @@ class Kernel
      */
     public function getStorage() : CartDriverContract
     {
-        return $this->app->make(config('app.storage'));
+        return $this->app->make(config('cart.storage'));
     }
 
     /**
      * Load configuration from config folder
      */
-    protected function loadConfigurationFiles() : void
+    public function loadConfigurationFiles() : void
     {
         $repository = $this->app->make('config');
 
@@ -91,8 +98,10 @@ class Kernel
         foreach ($this->coreServices as $abstract => $service) {
             list($abstract, $type) = explode('.', $abstract);
 
-            if ($type == 'singleton') {
-                $this->app->singleton($abstract, $service);
+            if (app()->resolved($abstract) === false) {
+                if ($type == 'singleton') {
+                    $this->app->singleton($abstract, $service);
+                }
             }
         }
     }
@@ -102,7 +111,7 @@ class Kernel
      */
     protected function loadServiceProvider() : void
     {
-        foreach (config('app.services') as $services) {
+        foreach (config('cart.services') as $services) {
             /** @var ServiceProviderContract */
             (new $services)->register($this->app);
         }

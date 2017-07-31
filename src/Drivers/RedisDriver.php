@@ -33,7 +33,7 @@ class RedisDriver implements CartDriverContract, DiscountDriverContract
     public function __construct(Client $client)
     {
         $this->redis = $client;
-        $this->prefix = config('app.drivers.redis.prefix');
+        $this->prefix = config('cart.drivers.redis.prefix');
     }
 
     /**

@@ -15,7 +15,7 @@ class DatabaseServiceProviders implements ServiceProviderContract
     public function register(Container $container) : void
     {
         $capsule = new Manager;
-        $prefix = 'app.drivers.database';
+        $prefix = 'cart.drivers.database';
 
         $capsule->addConnection([
             'driver'    => config($prefix . '.driver'),
