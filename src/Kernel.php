@@ -5,6 +5,7 @@ namespace Cart;
 
 use Cart\Contracts\CartDriverContract;
 use Cart\Contracts\ServiceProviderContract;
+use Cart\Contracts\SourceConfiguration;
 use Illuminate\Container\Container;
 use Illuminate\Config\Repository;
 use Symfony\Component\Finder\Finder;
@@ -62,9 +63,19 @@ class Kernel
     }
 
     /**
+     * Get all of the configuration files for the application.
+     * @param SourceConfiguration $configuration
+     */
+    public function loadConfiguration(SourceConfiguration $configuration) :  void
+    {
+        config()->set($configuration->get());
+    }
+
+
+    /**
      * Load configuration from config folder
      */
-    public function loadConfigurationFiles() : void
+    protected function loadConfigurationFiles() : void
     {
         $repository = $this->app->make('config');
 
