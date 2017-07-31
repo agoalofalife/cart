@@ -15,5 +15,5 @@ use Symfony\Component\Console\Application;
 $application = new Application();
 $application->add(new MigrateCommand());
 $application->add(new MigrateRollbackCommand());
-$application->add(new MigrateLaravelCommand(new OutputFormatterStyle('black', 'yellow', array('bold', 'blink')) , new ProgressBar( new ConsoleOutput, 7)) );
+$application->add(new MigrateLaravelCommand(new OutputFormatterStyle('black', 'yellow', array('bold', 'blink')) , new ProgressBar( new ConsoleOutput, 2)) );
 $application->run();

@@ -12,9 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class MigrateLaravelCommand extends Command
 {
     protected $listFileMigrations = [
-        'country' => '_Acreate_table_country',
-        'regions' => '_Bcreate_table_regions',
-        'cities'  => '_Ccreate_table_cities'
+        'cart_items' => '_create_table_cart_items',
     ];
 
     protected $formatterStyle;
@@ -44,7 +42,7 @@ class MigrateLaravelCommand extends Command
 
         $this->progressBar->start();
         $this->moveMigrate($this->progressBar);
-//        $this->moveConfig($this->progressBar);
+        $this->moveConfig($this->progressBar);
         $this->progressBar->finish();
         $output->writeln(['']);
         $output->writeln(['<info>All successfully copied!</info>']);
@@ -53,7 +51,8 @@ class MigrateLaravelCommand extends Command
     protected function moveMigrate(ProgressBar $progress)
     {
         $pathToMigrationsLaravel  =  $_SERVER["PWD"] . '/database/migrations/';
-        $pathToStubs              = __DIR__ . '/migrations/stubs/';
+        $pathToStubs              = __DIR__ . '/../../migrations/stubs/';
+
         $this->createDir($pathToMigrationsLaravel);
 
         foreach ($this->listFileMigrations as $name => $migrate) {
@@ -65,10 +64,11 @@ class MigrateLaravelCommand extends Command
 
     protected function moveConfig(ProgressBar $progress) : void
     {
-        $pathToConfig               = __DIR__ . '/../config.php';
+        $pathToConfig               = __DIR__ . '/../../config/app.php';
         $pathToConfigsLaravel       =  $_SERVER["PWD"] . '/config/';
         $this->createDir($pathToConfigsLaravel);
-        copy($pathToConfig, $pathToConfigsLaravel . 'geography.php');
+
+        copy($pathToConfig, $pathToConfigsLaravel . 'cart.php');
         $progress->advance();
     }
 
