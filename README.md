@@ -58,6 +58,7 @@ $kernel->loadConfiguration((new \Cart\SourcesConfigurations\File(__DIR__ . '/con
 
 ```
    // Сервис - провайдеры для настройки ваших драйверов
+   
     'services' => [
         Cart\ServiceProviders\DatabaseServiceProviders::class,
         \Cart\ServiceProviders\RedisServiceProvider::class,
