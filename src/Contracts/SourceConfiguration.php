@@ -14,4 +14,10 @@ interface SourceConfiguration
      * @return array
      */
     public function get() : array;
+
+    /**
+     * Get name
+     * @return string
+     */
+    public function getName() : string;
 }

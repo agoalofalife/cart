@@ -8,6 +8,16 @@ use Mockery\Exception;
 
 class File implements SourceConfiguration
 {
+    protected $name = 'cart';
+
+    public function __construct(string $path = '')
+    {
+        if (file_exists($path)) {
+            $this->pathToFile = $path;
+        } else {
+            throw new Exception('Local file name is not exist.');
+        }
+    }
     /**
      * @var string
      */
@@ -23,17 +33,14 @@ class File implements SourceConfiguration
         $configuration =  require $this->pathToFile;
         return $configuration;
     }
+
     /**
-     * @param $path string  path to file
-     * @return bool
+     * Get name
+     *
+     * @return string
      */
-    public function setSource($path) : bool
+    public function getName(): string
     {
-        if (file_exists($path)) {
-            $this->pathToFile = $path;
-        } else {
-            throw new Exception('Local file name is not exist.');
-        }
-        return true;
+        return $this->name;
     }
 }

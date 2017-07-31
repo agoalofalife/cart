@@ -40,18 +40,9 @@ class Kernel
         $this->app = Container::getInstance();
     }
 
-    public function bootstrapping($mode = 'base') : void
+    public function bootstrapping() : void
     {
-        switch ($mode) {
-            case 'base':
-                $this->loadCoreServiceProvider();
-                $this->loadConfigurationFiles();
-                $this->loadServiceProvider();
-                break;
-            case 'laravel':
-                $this->loadCoreServiceProvider();
-                $this->loadServiceProvider();
-        }
+        $this->loadCoreServiceProvider();
     }
 
     /**
@@ -68,37 +59,8 @@ class Kernel
      */
     public function loadConfiguration(SourceConfiguration $configuration) :  void
     {
-        config()->set($configuration->get());
-    }
-
-
-    /**
-     * Load configuration from config folder
-     */
-    protected function loadConfigurationFiles() : void
-    {
-        $repository = $this->app->make('config');
-
-        foreach ($this->getConfigurationFiles() as $key => $path) {
-            $repository->set($key, require $path);
-        }
-    }
-
-    /**
-     * Get all of the configuration files for the application.
-     * @return array
-     */
-    protected function getConfigurationFiles() : array
-    {
-        $files = [];
-
-        $configPath = realpath($this->configPath);
-
-        foreach (Finder::create()->files()->name('*.php')->in($configPath) as $file) {
-            $files[basename($file->getFilename(), '.php')] = $file->getRealPath();
-        }
-
-        return $files;
+        config()->set($configuration->getName(), $configuration->get());
+        $this->loadServiceProvider();
     }
 
     /**
