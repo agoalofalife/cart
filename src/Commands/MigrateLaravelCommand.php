@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class MigrateLaravelCommand extends Command
 {
     protected $listFileMigrations = [
-        'cart_items' => '_create_table_cart_items',
+        'cart_items' => '_cart_items_table',
     ];
 
     protected $formatterStyle;
