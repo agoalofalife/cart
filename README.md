@@ -18,7 +18,7 @@
      - [Использование](#Use)
 - [Написание своего драйвера](#CustomDriver)
 - [Интеграция с Laravel](#Laravel)
-
+- [Простое использование](#Guide)
 
 
 <a name="Required"></a>
@@ -159,7 +159,7 @@ $storage->discount(new \Cart\DiscountStrategy\PercentageStrategy(20), ['id' => 3
     ]
 ```
 
-- Реализовать интерфейс `CartDriverContract` и для скидки `CartDriverContract`
+- Реализовать интерфейс `CartDriverContract` и для скидки `DiscountDriverContract`
 
 - Вставить дравер в файл конфигурации :
 
@@ -185,4 +185,38 @@ $storage->discount(new \Cart\DiscountStrategy\PercentageStrategy(20), ['id' => 3
 
 ```
 app('cart')-> ...
+```
+
+<a name="Guide"></a>
+**Простое использование**
+
+- Установить пакет 
+
+`composer require agoalofalife/cart`
+
+- Установить свои настройки базы данных 
+
+```
+  'drivers' => [
+        'database' => [
+            'driver'    => 'mysql',
+            'host'      => 'localhost',
+            'database'  => 'test',
+            'username'  => 'test',
+            'password'  => 'test',
+            'charset'   => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix'    => ''
+        ]
+```
+
+- Выполнить команду для создание таблицы `./vendor/bin/cart cart:migrate`
+
+- Начать использовать драйвер базы данных.
+```
+$kernel = new \Cart\Kernel();
+$kernel->bootstrapping();
+$kernel->loadConfiguration((new \Cart\SourcesConfigurations\File(__DIR__ . '/cart.php')));
+$kernel->loadServiceProvider();
+$storage = $kernel->getStorage();
 ```
