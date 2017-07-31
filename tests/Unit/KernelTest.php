@@ -23,6 +23,11 @@ class KernelTest extends TestCase
         $this->kernel->bootstrapping();
     }
 
+    public function testBootstrappingWithlLaravel() : void
+    {
+        $this->kernel->bootstrapping('laravel');
+    }
+
     public function testGetStorage() : void
     {
         $this->assertInstanceOf(CartDriverContract::class, $this->kernel->getStorage());
