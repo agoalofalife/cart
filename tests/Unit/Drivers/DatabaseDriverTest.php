@@ -98,22 +98,40 @@ class DatabaseDriverTest extends TestCase
         $this->assertFalse($this->driver->remove([]));
     }
 
+    public function testRemoveUpdate() : void
+    {
+        $builder = $this->mock(Builder::class);
+        $collection = $this->mock(Collection::class);
+
+        $this->capsule->shouldReceive('table')->andReturn($builder)->times(2);
+        $builder->shouldReceive('where')->andReturn($builder)->times(2);
+        $builder->shouldReceive('get')->andReturn($builder)->andReturn($collection)->times(1);
+        $builder->shouldReceive('update')->andReturn($builder)->once();
+        $collection->shouldReceive('isNotEmpty')->andReturn(true);
+
+        $collection->shouldReceive('first')->andReturn(new class{
+            public $data = '[{"id" : "2", "count" :"0"}]';
+        });
+
+        $this->driver->remove(['id' => 1, 'user_id' => $this->faker()->randomDigit]);
+    }
+
     public function testRemoveDelete() : void
     {
-        $this->assertTrue(true);
-//        $builder = $this->mock(Builder::class);
-//        $collection= $this->mock(Collection::class);
-//
-//
-//        $this->capsule->shouldReceive('table')->andReturn($builder)->times(4);
-//        $builder->shouldReceive('where')->andReturn($builder)->times(4);
-//        $builder->shouldReceive('get')->andReturn($builder)->andReturn($collection)->times(3);
-//        $collection->shouldReceive('isNotEmpty')->andReturn(true);
-//        $collection->shouldReceive('first')->andReturn(new class{
-//            public $data = '[{"id" : "2", "count" :"0"}]';
-//        });
-//
-//        $this->driver->remove(['id' => $this->faker()->randomDigit, 'user_id' => $this->faker()->randomDigit]);
+
+        $builder = $this->mock(Builder::class);
+        $collection= $this->mock(Collection::class);
+
+        $this->capsule->shouldReceive('table')->andReturn($builder)->times(2);
+        $builder->shouldReceive('where')->andReturn($builder)->times(2);
+        $builder->shouldReceive('get')->andReturn($builder)->andReturn($collection)->times(1);
+        $collection->shouldReceive('isNotEmpty')->andReturn(true);
+        $builder->shouldReceive('delete')->once();
+        $collection->shouldReceive('first')->andReturn(new class{
+            public $data = '[{"id" : "2", "count" :"0"}]';
+        });
+
+        $this->driver->remove(['id' => 2, 'user_id' => 0]);
     }
 
     public function testClear() : void
@@ -244,5 +262,27 @@ class DatabaseDriverTest extends TestCase
         })->once();
 
         $this->driver->discount($discount, ['id' => $id, 'user_id' => $userId, 'price' => $price]);
+    }
+
+    public function testDiscountEquals() : void
+    {
+        $userId   = $this->faker()->randomDigit;
+        $price    = $this->faker()->randomDigit;
+        $discount = $this->mock(DiscountContract::class);
+        $builder  = $this->mock(Builder::class);
+        $collection = $this->mock(Collection::class);
+
+        $discount->shouldReceive('make')->with($price);
+        $this->capsule->shouldReceive('table')->andReturn($builder)->times(2);
+        $builder->shouldReceive('where')->andReturn($builder)->times(2);
+        $builder->shouldReceive('get')->andReturn($builder)->andReturn($collection)->once();
+        $collection->shouldReceive('isNotEmpty')->andReturn(true);
+        $builder->shouldReceive('update')->once();
+
+        $collection->shouldReceive('first')->andReturn(new class{
+            public $data = '[{"id": "2", "count" :"0"}]';
+        })->once();
+
+        $this->driver->discount($discount, ['id' => 2, 'user_id' => $userId, 'price' => $price]);
     }
 }

@@ -177,11 +177,7 @@ class DatabaseDriver implements CartDriverContract, SetTableDriver, DiscountDriv
     private function existItem(array $item) : bool
     {
         $collection = $this->manager->table($this->table)->where('user_id', $item['user_id'])->get();
-
-        if ($collection->isNotEmpty()) {
-            return $collection->make(fromJson($collection->first()->data))->contains('id', $item['id']);
-        }
-        return false;
+        return $collection->make(fromJson($collection->first()->data))->contains('id', $item['id']);
     }
 
     /**
