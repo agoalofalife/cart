@@ -41,10 +41,11 @@ composer require agoalofalife/cart
 <a name="Configuration"></a>
 **Установка конфигураций**
 
-В начале было слово..
-Каждый раз когда вы создаете класс для корзины, он может иметь свой способ хранения информации (Драйверы)ю
+В начале было слово...
 
-Например , драйвер базы данных имеет настройки подключение название таблицы и тому подобное.
+Каждый раз когда вы создаете класс для корзины, он может иметь свой способ хранения информации (Драйвера).
+
+Например , драйвер базы данных имеет настройки подключение, название таблицы и тому подобное.
 Давайте рассмотрим как мы можем загрузить конфигурации:
 
 ```
@@ -90,10 +91,12 @@ $kernel->loadConfiguration((new \Cart\SourcesConfigurations\File(__DIR__ . '/con
 
 <a name="Drivers"></a>
 **Драйвера**
+
 На данный момент поддерживается два типа драйвера : Redis и база данных.
 
 <a name="Use"></a>
 **Использование**
+
 Какой драйвер вы будете использовать зависит от настройки в файле конфигурации:
 ```
     'storage' => \Cart\Drivers\DatabaseDriver::class
@@ -137,6 +140,34 @@ $storage->discount(new \Cart\DiscountStrategy\FixDiscountStrategy(100), ['id' =>
 $storage->discount(new \Cart\DiscountStrategy\PercentageStrategy(20), ['id' => 3, 'user_id' => 1, 'price' => 200]);
 
 ```
+
+По желанию вы можете дополнить свою стратегию изменения цены, реализовав интерфейс `DiscountContract`.
+
+
+<a name="CustomDriver"></a>
+**Написание своего драйвера**
+
+Написать драйвер в три простых шага : 
+
+- По примеру создать свой  `ServiceProvider` для начальных конфигураций и дописать его в файле конфигурации.
+
+```
+    'services' => [
+        Cart\ServiceProviders\DatabaseServiceProviders::class,
+        \Cart\ServiceProviders\RedisServiceProvider::class,
+        ...
+    ]
+```
+
+- Реализовать интерфейс `CartDriverContract` и для скидки `CartDriverContract`
+
+- Вставить дравер в файл конфигурации :
+
+```
+  'storage' => \Cart\Drivers\DatabaseDriver::class
+```
+
+
 <a name="Laravel"></a>
 **Интеграция с Laravel**
 
