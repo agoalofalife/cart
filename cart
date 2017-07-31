@@ -3,7 +3,10 @@
 require $_SERVER["PWD"] . '/vendor/autoload.php';
 use Cart\Commands\MigrateCommand;
 use Cart\Commands\MigrateRollbackCommand;
-
+use Cart\Commands\MigrateLaravelCommand;
+use Symfony\Component\Console\Formatter\OutputFormatterStyle;
+use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Cart\Kernel;
 use Symfony\Component\Console\Application;
 
@@ -12,5 +15,5 @@ use Symfony\Component\Console\Application;
 $application = new Application();
 $application->add(new MigrateCommand());
 $application->add(new MigrateRollbackCommand());
-
+$application->add(new MigrateLaravelCommand(new OutputFormatterStyle('black', 'yellow', array('bold', 'blink')) , new ProgressBar( new ConsoleOutput, 7)) );
 $application->run();

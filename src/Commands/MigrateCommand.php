@@ -15,15 +15,14 @@ use Symfony\Component\Finder\Finder;
  */
 class MigrateCommand extends Command
 {
-    protected function configure()
+    protected function configure() : void
     {
         $this
             ->setName('cart:migrate')
             ->setDescription('Creates a new table cart.');
     }
 
-
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output) : void
     {
         foreach (Finder::create()->files()->name('*.php')->
                                 in(__DIR__. '/../../migrations') as $file) {
