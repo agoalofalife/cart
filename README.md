@@ -51,7 +51,7 @@ composer require agoalofalife/cart
 ```
 $kernel = new \Cart\Kernel();
 $kernel->bootstrapping();
-$kernel->loadConfiguration((new \Cart\SourcesConfigurations\File(__DIR__ . '/config/cart.php')));
+$kernel->loadConfiguration(new \Cart\SourcesConfigurations\File(__DIR__ . '/config/cart.php'));
 ```
 
 Метод `loadConfiguration` принимает обьект типа `SourceConfiguration`, вы можете использовать класс `File` по умолчанию передав в конструктор путь до файла, или написать свой класс , реализующий `SourceConfiguration`.
