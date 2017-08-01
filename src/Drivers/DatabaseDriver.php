@@ -118,6 +118,17 @@ class DatabaseDriver implements CartDriverContract, SetTableDriver, DiscountDriv
     }
 
     /**
+     * Get all items to user id
+     * @param int $userId
+     * @return array
+     */
+    public function get(int $userId): array
+    {
+        $row = $this->manager->table($this->table)->where('user_id', $userId)->get();
+        return fromJson($row->toJson(), true);
+    }
+
+    /**
      * Set custom name table
      * @param string $name
      */

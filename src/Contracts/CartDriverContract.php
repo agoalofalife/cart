@@ -37,4 +37,11 @@ interface CartDriverContract
      * @return mixed
      */
     public function change(array $item, CounterItemContract $itemContract) : bool ;
+
+    /**
+     * Get items to user id
+     * @param int $userId
+     * @return array
+     */
+    public function get(int $userId) : array ;
 }

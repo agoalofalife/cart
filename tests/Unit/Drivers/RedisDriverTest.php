@@ -87,6 +87,11 @@ class RedisDriverTest extends TestCase
         $this->assertTrue($this->driver->remove($input));
     }
 
+    public function testGet() : void
+    {
+        $this->redis->shouldReceive('hgetall')->once()->andReturn([ 0 => $this->fakeSerialize]);
+        $this->assertInternalType('array', $this->driver->get($this->faker()->randomDigit));
+    }
     public function testClear() : void
     {
         $id = $this->faker()->randomNumber();

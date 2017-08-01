@@ -141,6 +141,21 @@ class RedisDriver implements CartDriverContract, DiscountDriverContract
     }
 
     /**
+     * Get all items to user id
+     * @param int $userId
+     * @return array
+     */
+    public function get(int $userId) : array
+    {
+        $items = $this->redis->hgetall($this->normalizeKey((int)$userId));
+        $items = array_map(function (string $value) {
+            return unserialize($value);
+        }, $items);
+
+        return $items;
+    }
+
+    /**
      * @param array $item
      */
     private function incrementItem(array $item) : void

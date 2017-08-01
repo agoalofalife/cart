@@ -70,6 +70,19 @@ class DatabaseDriverTest extends TestCase
         $this->driver->add(['id' => $this->faker()->randomDigit, 'user_id' => $this->faker()->randomDigit, 'count' => 2]);
     }
 
+    public function testGet() : void
+    {
+        $builder = $this->mock(Builder::class);
+        $collection= $this->mock(Collection::class);
+
+        $this->capsule->shouldReceive('table')->andReturn($builder)->once();
+        $builder->shouldReceive('where')->andReturn($builder)->once();
+        $builder->shouldReceive('get')->andReturn($builder)->andReturn($collection)->once();
+
+        $collection->shouldReceive('toJson')->andReturn(json_encode([]));
+        $this->driver->get($this->faker()->randomNumber());
+    }
+
     public function testAddIsNotExistItem() : void
     {
         $builder = $this->mock(Builder::class);
