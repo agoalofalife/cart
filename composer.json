@@ -50,10 +50,5 @@
         "testd": "vendor/bin/phpunit --stop-on-failure --no-coverage"
     },
     "minimum-stability": "dev",
-    "prefer-stable": true,
-    "extra": {
-        "branch-alias": {
-            "dev-master": "dev"
-        }
-    }
+    "prefer-stable": true
 }
