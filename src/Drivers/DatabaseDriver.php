@@ -86,7 +86,6 @@ class DatabaseDriver implements CartDriverContract, SetTableDriver, DiscountDriv
             } else {
                 $this->deleteRow($item['user_id']);
             }
-
             return true;
         }
            return false;
