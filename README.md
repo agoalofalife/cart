@@ -58,7 +58,6 @@ $kernel->loadConfiguration((new \Cart\SourcesConfigurations\File(__DIR__ . '/con
 
 ```
    // Сервис - провайдеры для настройки ваших драйверов
-   
     'services' => [
         Cart\ServiceProviders\DatabaseServiceProviders::class,
         \Cart\ServiceProviders\RedisServiceProvider::class,
@@ -128,6 +127,9 @@ $storage->change(['id' => 5, 'user_id' => 1, 'count' => 0])
 
 // удалить конкретный товар из корзины 
 $storage->remove(['id' => 2, 'user_id' => 1]);
+
+// Получить список всех товаров по user_id
+$storage->get(1);
 ```
 
 Помимо этого так же есть возможность изменить цену товара (Например скидка).
