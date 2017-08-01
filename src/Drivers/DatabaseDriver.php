@@ -271,7 +271,7 @@ class DatabaseDriver implements CartDriverContract, SetTableDriver, DiscountDriv
      */
     private function updateRow(int $userId, string $values) : void
     {
-        $this->getItems($userId)->update([
+        $this->manager->table($this->table)->where('user_id', $userId)->update([
             'data' => $values
         ]);
     }
@@ -291,6 +291,6 @@ class DatabaseDriver implements CartDriverContract, SetTableDriver, DiscountDriv
      */
     private function deleteRow(int $userId) : void
     {
-        $this->getItems($userId)->delete();
+        $this->manager->table($this->table)->where('user_id', $userId)->delete();
     }
 }
