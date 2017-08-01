@@ -288,10 +288,10 @@ class DatabaseDriver implements CartDriverContract, SetTableDriver, DiscountDriv
     }
 
     /**
-     * @param int $user
+     * @param int $userId
      */
-    private function deleteRow(int $user) : void
+    private function deleteRow(int $userId) : void
     {
-        $this->manager->table($this->table)->where('user_id', $user)->delete();
+        $this->getItems($userId)->delete();
     }
 }
