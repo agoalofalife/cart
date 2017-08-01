@@ -67,7 +67,10 @@ class DatabaseDriverTest extends TestCase
         });
 
         $count->shouldReceive('execute');
-        $this->driver->add(['id' => $this->faker()->randomDigit, 'user_id' => $this->faker()->randomDigit, 'count' => 2]);
+        $this->driver->add([
+            'id' => $this->faker()->randomDigit,
+            'user_id' => $this->faker()->randomDigit, 'count' => 2
+        ]);
     }
 
     public function testGet() : void

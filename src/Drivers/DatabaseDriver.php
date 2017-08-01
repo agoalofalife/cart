@@ -9,9 +9,9 @@ use Cart\Contracts\DiscountContract;
 use Cart\Contracts\DiscountDriverContract;
 use Cart\Contracts\SetTableDriver;
 use Cart\CountOperation\AdditionCount;
-use Cart\CountOperation\ChangeCount;
 use Cart\Traits\Validate;
 use Illuminate\Database\Capsule\Manager;
+use Illuminate\Support\Collection;
 
 /**
  * Class DatabaseDriver
@@ -74,7 +74,7 @@ class DatabaseDriver implements CartDriverContract, SetTableDriver, DiscountDriv
             return false;
         }
 
-        $collection = $this->manager->table($this->table)->where('user_id', '=', $item['user_id'])->get();
+        $collection = $this->getItems($item['user_id']);
 
         if ($collection->isNotEmpty()) {
             $itemFilter = array_filter(fromJson($collection->first()->data, true), function ($value) use ($item) {
@@ -124,7 +124,7 @@ class DatabaseDriver implements CartDriverContract, SetTableDriver, DiscountDriv
      */
     public function get(int $userId): array
     {
-        $row = $this->manager->table($this->table)->where('user_id', $userId)->get();
+        $row = $this->getItems($userId);
         return fromJson($row->toJson(), true);
     }
 
@@ -150,7 +150,7 @@ class DatabaseDriver implements CartDriverContract, SetTableDriver, DiscountDriv
         }
 
         $newPrice = $strategy->make($items['price']);
-        $row = $this->manager->table($this->table)->where('user_id', $items['user_id'])->get();
+        $row = $this->getItems($items['user_id']);
 
         if ($row->isNotEmpty()) {
             $transformItems = array_map(function ($value) use ($items, $newPrice) {
@@ -169,12 +169,12 @@ class DatabaseDriver implements CartDriverContract, SetTableDriver, DiscountDriv
 
     /**
      * Check exist User in table cart_items
-     * @param int $user
+     * @param int $userId
      * @return bool
      */
-    private function existUser(int $user) : bool
+    private function existUser(int $userId) : bool
     {
-        return $this->manager->table($this->table)->where('user_id', $user)->get()->count() > 0;
+        return $this->getItems($userId)->count() > 0;
     }
 
     /**
@@ -187,7 +187,7 @@ class DatabaseDriver implements CartDriverContract, SetTableDriver, DiscountDriv
      */
     private function existItem(array $item) : bool
     {
-        $collection = $this->manager->table($this->table)->where('user_id', $item['user_id'])->get();
+        $collection = $this->getItems($item['user_id']);
         return $collection->make(fromJson($collection->first()->data))->contains('id', $item['id']);
     }
 
@@ -199,8 +199,9 @@ class DatabaseDriver implements CartDriverContract, SetTableDriver, DiscountDriv
      */
     private function addItem(array $item) :void
     {
-        $collection = $this->manager->table($this->table)->where('user_id', $item['user_id'])->get()->first();
-        $items = fromJson($collection->data);
+        $collection = $this->getItems($item['user_id'])->first();
+        $items      = fromJson($collection->data);
+
         $item['count'] = 1;
         $items[] = $item;
 
@@ -222,15 +223,14 @@ class DatabaseDriver implements CartDriverContract, SetTableDriver, DiscountDriv
 
     /**
      * @param int                 $itemId
-     * @param int                 $user
+     * @param int                 $userId
      * @param int                 $counterUp
      * @param CounterItemContract $typeOperation
      * @return bool
      */
-    private function counterItem(int $itemId, int $user, int $counterUp, CounterItemContract $typeOperation) : bool
+    private function counterItem(int $itemId, int $userId, int $counterUp, CounterItemContract $typeOperation) : bool
     {
-        $collection = $this->manager->table($this->table)->where('user_id', $user)->get();
-
+        $collection = $this->getItems($userId);
         if ($collection->isEmpty()) {
             return false;
         }
@@ -245,9 +245,9 @@ class DatabaseDriver implements CartDriverContract, SetTableDriver, DiscountDriv
         $item['count'] = $typeOperation->execute((int)$item['count'], $counterUp);
 
         if ($item['count'] == 0) {
-            $this->remove(['id' => $itemId, 'user_id' => $user]);
+            $this->remove(['id' => $itemId, 'user_id' => $userId]);
         } else {
-            $this->updateRow((int)$user, inJson([$item]));
+            $this->updateRow((int)$userId, inJson([$item]));
         }
 
         return true;
@@ -267,14 +267,24 @@ class DatabaseDriver implements CartDriverContract, SetTableDriver, DiscountDriv
 
     /**
      * Update Row
-     * @param int    $user
+     * @param int    $userId
      * @param string $values
      */
-    private function updateRow(int $user, string $values) : void
+    private function updateRow(int $userId, string $values) : void
     {
-        $this->manager->table($this->table)->where('user_id', $user)->update([
+        $this->getItems($userId)->update([
             'data' => $values
         ]);
+    }
+
+    /**
+     * Get collection items from database
+     * @param int $userId
+     * @return Collection
+     */
+    private function getItems(int $userId)
+    {
+        return $this->manager->table($this->table)->where('user_id', $userId)->get();
     }
 
     /**
